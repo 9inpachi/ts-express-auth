@@ -1,6 +1,6 @@
 import { json, urlencoded } from "body-parser";
 import express from "express";
-import { login } from "./controllers/auth";
+import { authRouter, AuthRoutes } from "./controllers/auth";
 
 const app = express();
 
@@ -13,7 +13,7 @@ app.get("/", (req, res) => {
     hello: "world",
   });
 });
-app.post("/login", login);
+app.post(AuthRoutes.Auth, authRouter);
 
 app.listen({ port: app.get("port") }, () => {
   console.log(`Server started: http://localhost:${app.get("port")}`);

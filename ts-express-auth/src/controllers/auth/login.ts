@@ -12,7 +12,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
   await check("password", "Invalid password").notEmpty().run(req);
 
   const errors = validationResult(req);
-  if (errors) {
+  if (!errors.isEmpty()) {
     res.status(401).send({
       code: 406,
       message: errors,
