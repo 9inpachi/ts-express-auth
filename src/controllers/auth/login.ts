@@ -38,7 +38,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         fullName: sampleUser.fullName,
       },
       SECRETS.JWT_SECRET,
-      { expiresIn: "1h" }
+      { algorithm: "RS256", expiresIn: "1h" }
     );
 
     res.status(200).send({
