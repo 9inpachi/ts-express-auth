@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import expressJwt from "express-jwt";
 import { json, urlencoded } from "body-parser";
 import { authRouter, authRoutes } from "./controllers/auth";
@@ -14,7 +14,7 @@ app.use(urlencoded({ extended: true }));
 app.use(
   expressJwt({
     secret: SECRETS.JWT_SECRET,
-    requestProperty: "auth",
+    requestProperty: "user",
     algorithms: ["RS256"],
     getToken: (req) => {
       const authHeader =
@@ -25,14 +25,16 @@ app.use(
         return authToken[1];
       }
     },
-  })
+  }).unless({ path: [/^\/assets/, /^\/auth/] })
 );
-app.use((err: any, _req: Request, res: Response) => {
+app.use((err: Error, _req: Request, res: Response, next: NextFunction) => {
   if (err.name === "UnauthorizedError") {
     res.status(401).send({
       code: 401,
       message: "Invalid access token",
     });
+  } else {
+    next(err);
   }
 });
 
