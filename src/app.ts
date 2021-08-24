@@ -1,9 +1,9 @@
 import express, { Request, Response } from "express";
-import expressJwt, { UnauthorizedError } from "express-jwt";
+import expressJwt from "express-jwt";
 import { json, urlencoded } from "body-parser";
-import { authRouter, AuthRoutes } from "./controllers/auth";
+import { authRouter, authRoutes } from "./controllers/auth";
 import { SECRETS } from "./secrets";
-import { userRouter } from "./controllers/user";
+import { userRouter, userRoutes } from "./controllers/user";
 
 const app = express();
 
@@ -36,8 +36,8 @@ app.use((err: any, _req: Request, res: Response) => {
   }
 });
 
-app.post(AuthRoutes.Auth, authRouter);
-app.get("/", userRouter);
+app.use(authRoutes.root, authRouter);
+app.use(userRoutes.root, userRouter);
 
 app.listen({ port: app.get("port") }, () => {
   console.log(`Server started: http://localhost:${app.get("port")}`);

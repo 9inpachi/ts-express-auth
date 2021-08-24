@@ -1,4 +1,4 @@
-export enum AuthRoutes {
-  Auth = "/auth",
-  Login = "/login",
-}
+export const authRoutes = {
+  root: "/auth",
+  login: "/login",
+};

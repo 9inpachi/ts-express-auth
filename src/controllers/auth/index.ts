@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { login } from "./login";
-import { AuthRoutes } from "./routes";
+import { authRoutes } from "./routes";
 
 const authRouter = Router();
 
-authRouter.post(AuthRoutes.Login, login);
+authRouter.post(authRoutes.login, login);
 
-export { authRouter, AuthRoutes };
+export { authRouter, authRoutes };

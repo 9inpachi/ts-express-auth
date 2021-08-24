@@ -1,3 +1,4 @@
-export enum UserRoutes {
-  User = "/user",
-}
+export const userRoutes = {
+  root: "/user",
+  profile: "/profile",
+};
