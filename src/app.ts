@@ -15,7 +15,7 @@ app.use(
   expressJwt({
     secret: SECRETS.JWT_SECRET,
     requestProperty: "user",
-    algorithms: ["RS256"],
+    algorithms: ["HS256"],
     getToken: (req) => {
       const authHeader =
         (req.headers.Authorization as string) || req.headers.authorization;
