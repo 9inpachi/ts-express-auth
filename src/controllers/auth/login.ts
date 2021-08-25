@@ -32,6 +32,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
   try {
     const accessToken = jwt.sign(
+      // This is session information in token.
       {
         username: sampleUser.username,
         email: sampleUser.email,
@@ -40,9 +41,14 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       SECRETS.JWT_SECRET,
       { algorithm: "HS256", expiresIn: "1m" }
     );
+    const refreshToken = jwt.sign({}, SECRETS.JWT_SECRET, {
+      algorithm: "HS256",
+      expiresIn: "10m",
+    });
 
     res.status(200).send({
       accessToken,
+      refreshToken,
     });
   } catch (error) {
     res.status(400).send({
