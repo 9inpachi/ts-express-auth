@@ -2,10 +2,25 @@ import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
 import { check, validationResult } from "express-validator";
 import { SECRETS } from "../../secrets";
-import { sampleUser } from "../../models/user";
+import { sampleUser, User } from "../../models/user";
 
 const authenticate = (username: string, password: string) =>
   username === sampleUser.username && password === sampleUser.password;
+
+export const getAuthToken = (payload: any = {}) => {
+  const accessToken = jwt.sign(
+    // This is session information in token.
+    payload,
+    SECRETS.JWT_SECRET,
+    { algorithm: "HS256", expiresIn: "30s" }
+  );
+  const refreshToken = jwt.sign({}, SECRETS.JWT_SECRET, {
+    algorithm: "HS256",
+    expiresIn: "2m",
+  });
+
+  return { accessToken, refreshToken };
+};
 
 export const login = async (req: Request, res: Response): Promise<void> => {
   await check("username", "Invalid username").notEmpty().run(req);
@@ -31,20 +46,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
   }
 
   try {
-    const accessToken = jwt.sign(
-      // This is session information in token.
-      {
-        username: sampleUser.username,
-        email: sampleUser.email,
-        fullName: sampleUser.fullName,
-      },
-      SECRETS.JWT_SECRET,
-      { algorithm: "HS256", expiresIn: "1m" }
-    );
-    const refreshToken = jwt.sign({}, SECRETS.JWT_SECRET, {
-      algorithm: "HS256",
-      expiresIn: "10m",
-    });
+    const { accessToken, refreshToken } = getAuthToken(sampleUser);
 
     res.status(200).send({
       accessToken,

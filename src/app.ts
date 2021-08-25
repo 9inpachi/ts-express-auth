@@ -4,6 +4,7 @@ import { json, urlencoded } from "body-parser";
 import { authRouter, authRoutes } from "./controllers/auth";
 import { SECRETS } from "./secrets";
 import { userRouter, userRoutes } from "./controllers/user";
+import { tokenFromRequest } from "./utils/token";
 
 const app = express();
 
@@ -16,15 +17,7 @@ app.use(
     secret: SECRETS.JWT_SECRET,
     requestProperty: "user",
     algorithms: ["HS256"],
-    getToken: (req) => {
-      const authHeader =
-        (req.headers.Authorization as string) || req.headers.authorization;
-      const authToken = authHeader?.split(" ");
-
-      if (authToken && authToken?.[0] === "Bearer") {
-        return authToken[1];
-      }
-    },
+    getToken: tokenFromRequest,
   }).unless({ path: [/^\/assets/, /^\/auth/] })
 );
 app.use((err: Error, _req: Request, res: Response, next: NextFunction) => {
